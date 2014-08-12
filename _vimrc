@@ -31,6 +31,8 @@ filetype plugin indent on
 NeoBundleCheck
 
 "-----------------------------------------------------
+set encoding=utf-8
+
 set tags=~/.tags
 set noswapfile
 set nobackup
