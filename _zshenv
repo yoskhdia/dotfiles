@@ -1,0 +1,15 @@
+## 重複パスを登録しない
+typeset -U path cdpath fpath manpath
+
+## sudo用のpathを設定
+typeset -xT SUDO_PATH sudo_path
+typeset -U sudo_path
+sudo_path=({/usr/local,/usr,}/sbin(N-/))
+
+## pathを設定
+path=(~/bin(N-/) /usr/local/bin(N-/) ${path})
+
+## Scala with svm
+export PATH="$HOME/.svm/bin:$PATH"
+export SCALA_HOME=~/.svm/current/rt
+export PATH="$SCALA_HOME/bin:$PATH"
