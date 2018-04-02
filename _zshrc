@@ -83,12 +83,17 @@ WORDCHARS='*?_-.[]~=&;!#$%^(){}<>'
 PROMPT="[%n@%m]"
 RPROMPT="[%~]"
 
-# rbenv jenv の初期化
-eval "$(rbenv init - zsh)"
-eval "$(jenv init - zsh)"
+# rbenv の初期化
+if type "rbenv" &> /dev/null; then
+  eval "$(rbenv init - zsh)"
+fi
 
-# Java
-export JAVA_HOME=`/usr/libexec/java_home`
+# direnv の初期化
+# https://github.com/direnv/direnv
+if type "direnv" &> /dev/null; then
+  eval "$(direnv hook zsh)"
+fi
+
 
 #-----------------------Plugin-----------------------------
 # プラグイン管理
@@ -97,4 +102,12 @@ if [[ -f $HOME/.zsh/antigen/antigen.zsh ]]; then
   antigen bundle zsh-users/zsh-completions src
   antigen bundle zsh-users/zsh-syntax-highlighting
   antigen apply
+fi
+
+# zsh-kubectl-prompt
+# https://github.com/superbrothers/zsh-kubectl-prompt
+if [[ -f $HOME/.zsh/zsh-kubectl-prompt/kubectl.zsh ]]; then
+  autoload -U colors; colors
+  source $HOME/.zsh/zsh-kubectl-prompt/kubectl.zsh
+  RPROMPT='[%~]%{$fg[blue]%}($ZSH_KUBECTL_PROMPT)%{$reset_color%}'
 fi
