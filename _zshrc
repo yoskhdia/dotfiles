@@ -2,6 +2,9 @@
 # Vi ライクな操作が好みであれば `bindkey -v` とする
 bindkey -e
 
+# 色
+autoload -U colors; colors
+
 # 自動補完を有効にする
 # コマンドの引数やパス名を途中まで入力して <Tab> を押すといい感じに補完してくれる
 # 例： `cd path/to/<Tab>`, `ls -<Tab>`
@@ -80,8 +83,9 @@ SAVEHIST=1000000
 WORDCHARS='*?_-.[]~=&;!#$%^(){}<>'
 
 # プロンプトに関する設定
-PROMPT="[%n@%m]"
-RPROMPT="[%~]"
+# PROMPT="[%n@%m]"
+# RPROMPT="[%~]"
+PROMPT="%F{blue}%m%f@%F{red}%~%f"$'\n'"%# "
 
 # rbenv の初期化
 if type "rbenv" &> /dev/null; then
@@ -94,6 +98,23 @@ if type "direnv" &> /dev/null; then
   eval "$(direnv hook zsh)"
 fi
 
+function qr() {
+  if type "qrencode" &> /dev/null; then
+    qrencode -o - $@ | open -f -a preview
+  fi
+}
+
+add_newline() {
+  if [[ -z $PS1_NEWLINE_LOGIN ]]; then
+    PS1_NEWLINE_LOGIN=true
+  else
+    printf '\n'
+  fi
+}
+
+precmd() {
+  add_newline
+}
 
 #-----------------------Plugin-----------------------------
 # プラグイン管理
@@ -101,13 +122,17 @@ if [[ -f $HOME/.zsh/antigen/antigen.zsh ]]; then
   source $HOME/.zsh/antigen/antigen.zsh
   antigen bundle zsh-users/zsh-completions src
   antigen bundle zsh-users/zsh-syntax-highlighting
+  antigen bundle zsh-users/zsh-autosuggestions
   antigen apply
+fi
+
+if [[ -f $HOME/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh ]]; then
+  source $HOME/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
 fi
 
 # zsh-kubectl-prompt
 # https://github.com/superbrothers/zsh-kubectl-prompt
 if [[ -f $HOME/.zsh/zsh-kubectl-prompt/kubectl.zsh ]]; then
-  autoload -U colors; colors
   source $HOME/.zsh/zsh-kubectl-prompt/kubectl.zsh
   RPROMPT='[%~]%{$fg[blue]%}($ZSH_KUBECTL_PROMPT)%{$reset_color%}'
 fi
